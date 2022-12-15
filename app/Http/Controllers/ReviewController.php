@@ -7,6 +7,7 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReviewController extends Controller
 {
@@ -82,7 +83,8 @@ class ReviewController extends Controller
     public function show(Review $review)
     {
         $type = lcfirst($review->type);
-        return view('review.show', ['review' => $review, 'type' => $type]);
+        $idUserLogged = Auth::id();
+        return view('review.show', ['review' => $review, 'type' => $type, 'idUserLogged' => $idUserLogged]);
     }
 
     /**
@@ -93,7 +95,14 @@ class ReviewController extends Controller
      */
     public function edit(Review $review)
     {
-        return view('review.edit', ['review' => $review]);
+        if($review->iduser == Auth::id()) {
+            return view('review.edit', ['review' => $review]);
+        } else {
+            return back()->withErrors([
+                'authorized' =>
+                'You cannot access here'
+            ]);
+        }
     }
 
     /**
@@ -107,7 +116,7 @@ class ReviewController extends Controller
     {
         $review->title = $request->title;
         $review->review = $request->review;
-        
+        $review->updated_at = Carbon::now();
         if($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
          $file = $request->file('thumbnail');
          $path = $file->getRealPath();

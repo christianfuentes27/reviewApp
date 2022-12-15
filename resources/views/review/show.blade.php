@@ -8,6 +8,11 @@
     </nav>
     <h1>{{ $review->title }} reviews</h1>
 </div>
+@error('authorized')
+    <div style="width: 200px; margin: 20px auto; padding: 15px 25px; text-align: center;" class="invalid-feedback bg-danger p-2" role="alert">
+        <strong>{{ $message }}</strong>
+    </div>
+@enderror
 <div style="width: 90%; height: auto; margin: 50px auto; display: flex; flex-wrap: wrap; justify-content: center;">
     <div style="width: 100%; height: auto; border: 1px solid black; margin: 20px; display: flex; flex-wrap: wrap;">
         <div style="width: 40%; padding-bottom: 25%; background-image: url('data:image/jpeg;base64,{{ $review->thumbnail }}'); 
@@ -29,7 +34,11 @@
     </div>
 </div>
 <div class="text-center" style="margin: 30px 0;">
-    <a href="{{ url('review/' . $review->id . '/edit') }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin: 0 10px;">Edit</a>
+    @auth
+        @if($review->iduser == $idUserLogged)
+            <a href="{{ url('review/' . $review->id . '/edit') }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin: 0 10px;">Edit</a>
+        @endif
+    @endauth
     <a href="{{ url('review/' . $type) }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin: 0 10px;">Back</a>
 </div>
 @endsection

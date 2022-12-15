@@ -64,12 +64,14 @@
                 @enderror
                 <div class="form-group">
                     <label for="photos">Review photos</label>
+                    <p>Click the images you want to remove</p>
                     <div class="images-container" style="display: flex; flex-wrap: wrap; justify-content: center; margin: 30px 0;">
                         @foreach($review->images as $image)
                             <div class="review-photo" data-img="{{ $image->id }}" style="width: 120px; height: 120px; background-image: url('{{ asset('storage/images/' . $image->name) }}'); 
                                     background-size: cover; background-position: center center; margin: 10px"></div>
                         @endforeach
                     </div>
+                    <p>Select the images you want to add</p>
                     <input type="file" multiple accept="image/jpeg" class="form-control-file" id="photos" name="photos[]">
                 </div>
                 <input class="toRemove" type="hidden" name="toRemove[]"/>
@@ -80,7 +82,7 @@
                 @enderror
                 <div class="text-right" style="margin: 15px 0;">
                     <button type="submit" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px;">Edit</button>
-                    <a href="{{ url('/') }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin-left: 10px;">Back</a>
+                    <a href="{{ url('review/' . $review->id) }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin-left: 10px;">Back</a>
                 </div>
             </form>
         </div>

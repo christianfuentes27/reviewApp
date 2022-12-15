@@ -28,5 +28,6 @@
 </div>
 <div class="text-center" style="margin: 30px 0;">
     <a href="{{ url('review/create') }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px;">Add review</a>
+    <a href="{{ url('/') }}" class="btn" style="background: #c59a6d; color: white; border-radius: 0; padding: 10px 30px; margin-left: 10px;">Back</a>
 </div>
 @endsection
