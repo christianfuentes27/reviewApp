@@ -62,6 +62,7 @@
             <li><a href="{{ url('review/movie') }}" class="page-scroll">Movies</a></li>
             <li><a href="{{ url('review/record') }}" class="page-scroll">Records</a></li>
             @auth
+              <li><a href="{{ url('user') }}" class="page-scroll">Profile</a></li>
               <li><a href="{{ url('logout') }}" class="page-scroll">Log out</a></li>
             @endauth
             <li><a href="{{ url('login') }}" class="page-scroll">Log in</a></li>
@@ -156,6 +157,6 @@
     ================================================== -->
     <script type="text/javascript" src="{{ url('assets/js/main.js') }}"></script>
     <script type="text/javascript" src="{{ url('assets/js/edit.js') }}"></script>
-
+    @yield('scripts')
   </body>
 </html>

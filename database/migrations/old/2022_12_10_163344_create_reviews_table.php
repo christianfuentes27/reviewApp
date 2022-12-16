@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('review', 500);
             $table->foreignId('iduser');
             $table->binary('thumbnail');
-            $table->foreign('iduser')->references('id')->on('users');
+            $table->foreign('iduser')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
         $sql = 'alter table review change thumbnail thumbnail longblob';

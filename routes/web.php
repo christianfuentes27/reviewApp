@@ -24,4 +24,5 @@ Route::get('review/movie', [App\Http\Controllers\ReviewController::class, 'index
 Route::get('review/record', [App\Http\Controllers\ReviewController::class, 'index']);
 Route::resource('review', App\Http\Controllers\ReviewController::class)->except('index');
 Route::get('logout', [App\Http\Controllers\HomeController::class, 'logout'])->name('logout');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('verified');
+Route::resource('user', App\Http\Controllers\HomeController::class)->except(['create', 'store', 'show']);
+Route::resource('comment', App\Http\Controllers\CommentController::class)->except(['index', 'create', 'show']);

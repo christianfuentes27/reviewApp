@@ -16,14 +16,14 @@
                 @csrf
                 <h2 style="text-align: center;">Register</h2>
                 <label for="name" style="margin: 10px 0;">Name</label>
-                <input type="name" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Name">
+                <input value="{{ old('name') }}" type="name" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Name">
                 @error('name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
                 <label for="email" style="margin: 10px 0;">Email</label>
-                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email">
+                <input value="{{ old('email') }}" type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email">
                 @error('email')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>

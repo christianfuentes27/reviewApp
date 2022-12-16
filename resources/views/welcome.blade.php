@@ -20,7 +20,9 @@
             </a>
         </div>
     </div>
-
+    @if(session('message'))
+        <div class="alert alert-success myalert">{{ session('message') }}</div>
+    @endif
     <!-- Services Section -->
     <div id="services">
         <div class="container text-center">

@@ -16,7 +16,7 @@
                 @method('put')
                 <h2 style="text-align: center;">Edit Review</h2>
                 <label for="title" style="margin: 10px 0;">Title</label>
-                <input value="{{ old('title', $review->title) }}" type="title" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" required>
+                <input value="{{ old('title', $review->title) }}" minlength="2" maxlength="80" type="title" class="form-control @error('title') is-invalid @enderror" id="title" name="title" placeholder="Title" required>
                 @error('title')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -44,7 +44,7 @@
                 @enderror
                 <div class="form-group">
                     <label for="review">Review</label>
-                    <textarea class="form-control" id="review" name="review" rows="3" placeholder="Review" style="resize:none;" required>{{ old('review', $review->review) }}</textarea>
+                    <textarea class="form-control" minlength="2" maxlength="500" id="review" name="review" rows="3" placeholder="Review" style="resize:none;" required>{{ old('review', $review->review) }}</textarea>
                 </div>
                 @error('review')
                     <span class="invalid-feedback" role="alert">

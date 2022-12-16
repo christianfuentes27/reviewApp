@@ -8,6 +8,9 @@
     </nav>
     <h1>{{ $type }}s reviews</h1>
 </div>
+@if(session('message'))
+    <div class="alert alert-success myalert">{{ session('message') }}</div>
+@endif
 <div style="width: 100%; height: auto; margin: 50px 0; display: flex; flex-wrap: wrap; justify-content: center;">
     @foreach($reviews as $review)
         <div style="width: 300px; height: auto; border: 1px solid black; margin: 20px;">

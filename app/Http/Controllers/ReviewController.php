@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Http\Requests\ReviewCreateRequest;
+use App\Http\Requests\ReviewEditRequest;
 
 class ReviewController extends Controller
 {
@@ -17,9 +19,9 @@ class ReviewController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function __construct() {
-        $this->middleware('auth', ['except' => 'index']);
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }
-     
+    
     public function index()
     {
         $segments = request()->segments();
@@ -44,7 +46,7 @@ class ReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ReviewCreateRequest $request)
     {
         try {
             $review = new Review();
@@ -67,7 +69,7 @@ class ReviewController extends Controller
                 $image = new Image();
                 $image->saveInStorage($photo, $review->id);
             }
-            return redirect('review/' . $type);
+            return redirect('review/' . $type)->with('message', 'Review added successfully');
         } catch(\Exception $e) {
             return back()->withInput($request->all())->withErrors(
                 ['default' => 'Something went wrong']);
@@ -83,8 +85,7 @@ class ReviewController extends Controller
     public function show(Review $review)
     {
         $type = lcfirst($review->type);
-        $idUserLogged = Auth::id();
-        return view('review.show', ['review' => $review, 'type' => $type, 'idUserLogged' => $idUserLogged]);
+        return view('review.show', ['review' => $review, 'type' => $type]);
     }
 
     /**
@@ -100,7 +101,7 @@ class ReviewController extends Controller
         } else {
             return back()->withErrors([
                 'authorized' =>
-                'You cannot access here'
+                'You cannot edit a review that is not yours'
             ]);
         }
     }
@@ -112,32 +113,38 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Review $review)
+    public function update(ReviewEditRequest $request, Review $review)
     {
-        $review->title = $request->title;
-        $review->review = $request->review;
-        $review->updated_at = Carbon::now();
-        if($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
-         $file = $request->file('thumbnail');
-         $path = $file->getRealPath();
-         $image = file_get_contents($path);
-         $review->thumbnail = base64_encode($image);
-        }
-        
-        foreach($review->images as $image) {
-            $image->deleteImage($request->toRemove);
-        }
-        
-        if($request->has('photos')) {
-            foreach($request->photos as $photo) {
-                $image = new Image();
-                $image->saveInStorage($photo, $review->id);
-            }
-        }
-        
         try {
-            $review->update();
-            return redirect('review/' . $review->id);
+            if($review->iduser == Auth::id()) {
+                $review->title = $request->title;
+                $review->review = $request->review;
+                $review->updated_at = Carbon::now();
+                if($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
+                 $file = $request->file('thumbnail');
+                 $path = $file->getRealPath();
+                 $image = file_get_contents($path);
+                 $review->thumbnail = base64_encode($image);
+                }
+                
+                foreach($review->images as $image) {
+                    $image->deleteImage($request->toRemove);
+                }
+                
+                if($request->has('photos')) {
+                    foreach($request->photos as $photo) {
+                        $image = new Image();
+                        $image->saveInStorage($photo, $review->id);
+                    }
+                }
+                $review->update();
+                return redirect('review/' . $review->id)->with('message', 'Review updated successfully');
+            }   
+        
+            return back()->withErrors([
+                'authorized' =>
+                'You cannot edit a review that is not yours'
+            ]);
         } catch(\Exception) {
             return back()->withInput()->withErrors(
                 ['default' =>
@@ -153,6 +160,22 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        //
+        try {
+            if ($review->iduser == Auth::id()) {
+                $type = lcfirst($review->type);
+                foreach($review->images as $image) {
+                    $image->deleteFromStorage();
+                }
+                $review->delete();    
+            } else {
+               return back()->withErrors(['authorized' =>
+                'You cannot delete a review that is not yours']); 
+            }
+            
+            return redirect('review/' . $type)->with('message', 'Review deleted successfully');
+        } catch(\Exception $e) {
+            return back()->withErrors(
+                ['default' => 'Error when deleting']);
+        }
     }
 }
